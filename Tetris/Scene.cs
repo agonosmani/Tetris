@@ -32,7 +32,7 @@ namespace Tetris
             {
                 for(int j=0; j < (int)Width / cellWidth; j++)
                 {
-                    tileMatrix[i, j] = new Tile(i, j, cellWidth, cellHeight, Color.White);
+                    tileMatrix[i, j] = new Tile(j, i, cellWidth, cellHeight, Color.White);
                 }
             }
         }
@@ -46,7 +46,7 @@ namespace Tetris
         {
             List<int> rowInd = new List<int>();
 
-            for (int i = ((int)Height / cellHeight) - 1; i >= 0; i--)
+            for (int i = 1; i < ((int)Height / cellHeight); i++)
             {
                 bool fullRow = true;
                 for (int j = 0; j < (int)Width / cellWidth; j++)
@@ -64,19 +64,43 @@ namespace Tetris
                 }
             }
 
-            foreach(int ind in rowInd)
+            /*foreach(int ind in rowInd)
             {
                 //for (int i = ind; i >= 0; i--)
                 //{
                     for (int j = 0; j < (int)Width / cellWidth; j++)
                     {
                         //tileMatrix[ind, j] = tileMatrix[ind-1, j];
-                        tileMatrix[ind,j] = new Tile(ind, j, cellWidth, cellHeight, Color.White);
+                        tileMatrix[ind,j] = new Tile(j, ind, cellWidth, cellHeight, Color.White);
                     }
                 //}
+            }*/
+
+            foreach(int ind in rowInd)
+            {
+                for(int i=ind; i>0; i--)
+                {
+                    for(int j=0; j< (int)Width / cellWidth; j++)
+                    {
+                        tileMatrix[i, j].color = tileMatrix[i - 1, j].color;
+                        tileMatrix[i, j].set = tileMatrix[i - 1, j].set;
+                    }
+                }
             }
 
-            if (rowInd.Count != 0)
+            for (int i = 0; i < (int)Height / cellHeight; i++)
+            {
+                for (int j = 0; j < (int)Width / cellWidth; j++)
+                {
+                    if(tileMatrix[i,j].set && tileMatrix[i,j].color == Color.White)
+                    {
+                        tileMatrix[i, j] = new Tile(j, i, cellWidth, cellHeight, Color.White);
+                    }
+                }
+            }
+
+
+            /*if (rowInd.Count != 0)
             {
                 for (int i = ((int)Height / cellHeight) - 1; i > 0; i--)
                 {
@@ -85,11 +109,14 @@ namespace Tetris
                         //tileMatrix[j, i] = tileMatrix[j, i-1];
                         if (tileMatrix[i, j].set && i<rowInd[0])
                         {
-                            tileMatrix[i, j].y += rowInd.Count;
+                            tileMatrix[i + rowInd.Count, j] = tileMatrix[i, j];
+                            tileMatrix[i, j] = new Tile(j, i, cellWidth, cellHeight, Color.White);
                         }
+
+
                     }
                 }
-            }
+            }*/
 
         }
         public void fall()
@@ -129,7 +156,7 @@ namespace Tetris
             if(collision)
             {
                 generateFallingShape();
-                setTiles(tiles);
+                //setTiles(tiles);
             }
             else
             { 
