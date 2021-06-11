@@ -64,17 +64,6 @@ namespace Tetris
                 }
             }
 
-            /*foreach(int ind in rowInd)
-            {
-                //for (int i = ind; i >= 0; i--)
-                //{
-                    for (int j = 0; j < (int)Width / cellWidth; j++)
-                    {
-                        //tileMatrix[ind, j] = tileMatrix[ind-1, j];
-                        tileMatrix[ind,j] = new Tile(j, ind, cellWidth, cellHeight, Color.White);
-                    }
-                //}
-            }*/
 
             foreach(int ind in rowInd)
             {
@@ -87,36 +76,6 @@ namespace Tetris
                     }
                 }
             }
-
-            for (int i = 0; i < (int)Height / cellHeight; i++)
-            {
-                for (int j = 0; j < (int)Width / cellWidth; j++)
-                {
-                    if(tileMatrix[i,j].set && tileMatrix[i,j].color == Color.White)
-                    {
-                        tileMatrix[i, j] = new Tile(j, i, cellWidth, cellHeight, Color.White);
-                    }
-                }
-            }
-
-
-            /*if (rowInd.Count != 0)
-            {
-                for (int i = ((int)Height / cellHeight) - 1; i > 0; i--)
-                {
-                    for (int j = 0; j < (int)Width / cellWidth; j++)
-                    {
-                        //tileMatrix[j, i] = tileMatrix[j, i-1];
-                        if (tileMatrix[i, j].set && i<rowInd[0])
-                        {
-                            tileMatrix[i + rowInd.Count, j] = tileMatrix[i, j];
-                            tileMatrix[i, j] = new Tile(j, i, cellWidth, cellHeight, Color.White);
-                        }
-
-
-                    }
-                }
-            }*/
 
         }
         public void fall()
@@ -175,10 +134,54 @@ namespace Tetris
 
         public void rotateShape()
         {
-            if (FallingShape.Orientation == "up") FallingShape.Orientation = "right";
-            else if (FallingShape.Orientation == "right") FallingShape.Orientation = "down";
-            else if (FallingShape.Orientation == "down") FallingShape.Orientation = "left";
-            else if (FallingShape.Orientation == "left") FallingShape.Orientation = "up"; 
+            bool canRotate = true;
+
+            foreach (Tile t in FallingShape.draw(cellWidth, cellHeight))
+            {
+                if (t.y == (int)Height / cellHeight - 1)
+                {
+                    canRotate = false;
+                    break;
+                }
+
+                bool f = false;
+                foreach(Tile m in tileMatrix)
+                {
+                    if (m.set)
+                    {
+                        if (t.y + 1 == m.y && t.x == m.x)
+                        {
+                            canRotate = false;
+                            f = true;
+                            break;
+                        }
+                    }
+                    
+                }
+                if (f) break;
+            }
+
+            if (canRotate)
+            {
+                if (FallingShape.Orientation == "up") FallingShape.Orientation = "right";
+                else if (FallingShape.Orientation == "right") FallingShape.Orientation = "down";
+                else if (FallingShape.Orientation == "down") FallingShape.Orientation = "left";
+                else if (FallingShape.Orientation == "left") FallingShape.Orientation = "up";
+
+
+                foreach (Tile t in FallingShape.draw(cellWidth, cellHeight))
+                {
+                    if (t.x < 0)
+                    {
+                        moveRight();
+                    }
+                    else if (t.x >= (int)Width / cellWidth)
+                    {
+                        moveLeft();
+                    }
+                }
+            }
+
         }
         public void moveLeft()
         {
