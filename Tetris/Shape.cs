@@ -10,13 +10,17 @@ namespace Tetris
     public abstract class Shape
     {
         public Point Location { get; set; }
+        public Tile[] tiles { get; set; }
         public Color Color { get; set; }
-        public Shape(Point Location, Color Color)
+        public string Orientation { get; set; }
+        public Shape(Point Location, Color Color, string Orientation)
         {
+            tiles = new Tile[4];
             this.Color = Color;
             this.Location = Location;
+            this.Orientation = Orientation;
         }
 
-        public abstract void draw(Graphics g);
+        public abstract List<Tile> draw(int cellWidth, int cellHeight);
     }
 }

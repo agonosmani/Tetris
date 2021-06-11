@@ -10,40 +10,56 @@ using System.Windows.Forms;
 
 namespace Tetris
 {
-    public partial class forma : Form
+    public partial class TetrisForm : Form
     {
-        public forma()
+        public Scene scene;
+        public TetrisForm()
         {
+            
             InitializeComponent();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            scene = new Scene(GameFieldPictureBox.Width, GameFieldPictureBox.Height);
+            scene.generateFallingShape();
+            FallTimer.Start();
+            DoubleBuffered = true; 
             Invalidate();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            //Brush b = new SolidBrush(Color.Black);
-
-            Pen p = new Pen(Color.Black);
-            e.Graphics.DrawRectangle(p, 40, 20, 400, 400);
-            p.Dispose();
-
+           
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            Pen border = new Pen(Color.Black, 2F);
-            SolidBrush fone = new SolidBrush(Color.Blue);
+            scene.drawTable(e.Graphics);
+        }
 
-            e.Graphics.DrawRectangle(border, 4, 4, 100 * 10 + 2, 100 * 10 + 2);
-            e.Graphics.FillRectangle(fone, 5, 5, 100 * 10, 100 * 10);
+        private void FallTimer_Tick(object sender, EventArgs e)
+        {
+            scene.fall();
+            Invalidate(true);
+        }
+
+        private void TetrisForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyValue == 'T')
+            {
+                scene.rotateShape();
+            }
+            else if (e.KeyValue == 'A')
+            {
+                scene.moveLeft();
+            }
+            else if (e.KeyValue == 'D')
+            {
+                scene.moveRight();
+            }
+            Invalidate(true);
         }
     }
 }

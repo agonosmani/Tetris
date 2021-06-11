@@ -1,7 +1,7 @@
 ﻿
 namespace Tetris
 {
-    partial class forma
+    partial class TetrisForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,37 +29,47 @@ namespace Tetris
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.components = new System.ComponentModel.Container();
+            this.GameFieldPictureBox = new System.Windows.Forms.PictureBox();
+            this.FallTimer = new System.Windows.Forms.Timer(this.components);
+            ((System.ComponentModel.ISupportInitialize)(this.GameFieldPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
-            // pictureBox1
+            // GameFieldPictureBox
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(107, 25);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(278, 392);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
-            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            this.GameFieldPictureBox.Location = new System.Drawing.Point(133, 30);
+            this.GameFieldPictureBox.Name = "GameFieldPictureBox";
+            this.GameFieldPictureBox.Size = new System.Drawing.Size(278, 410);
+            this.GameFieldPictureBox.TabIndex = 0;
+            this.GameFieldPictureBox.TabStop = false;
+            this.GameFieldPictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             // 
-            // forma
+            // FallTimer
+            // 
+            this.FallTimer.Enabled = true;
+            this.FallTimer.Interval = 300;
+            this.FallTimer.Tick += new System.EventHandler(this.FallTimer_Tick);
+            // 
+            // TetrisForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(519, 460);
-            this.Controls.Add(this.pictureBox1);
-            this.Name = "forma";
-            this.Text = "Form1";
+            this.ClientSize = new System.Drawing.Size(638, 500);
+            this.Controls.Add(this.GameFieldPictureBox);
+            this.Name = "TetrisForm";
+            this.Text = "Tetris";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TetrisForm_KeyDown);
+            ((System.ComponentModel.ISupportInitialize)(this.GameFieldPictureBox)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox GameFieldPictureBox;
+        private System.Windows.Forms.Timer FallTimer;
     }
 }
 
