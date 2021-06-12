@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tetris
 {
+    [Serializable]
     public class Tile
     {
         public bool set { get; set; }

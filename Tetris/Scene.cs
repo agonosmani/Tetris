@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tetris
 {
+    [Serializable]
     public class Scene
     {
         public Shape FallingShape { get; set; }

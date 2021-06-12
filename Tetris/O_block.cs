@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tetris
 {
+    [Serializable]
     public class O_block : Shape
     {
         public O_block(string Orientation) : base(Color.Yellow, Orientation)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Tetris
 {
+    [Serializable]
     public abstract class Shape
     {
         public Point Location { get; set; }

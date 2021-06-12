@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Tetris
 {
@@ -73,6 +76,46 @@ namespace Tetris
         private void pictureBox1_Paint_1(object sender, PaintEventArgs e)
         {
             scene.drawNextShape(e.Graphics, pictureBox1.Width, pictureBox1.Height);
+        }
+
+        private void save(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs, scene);
+            }
+        }
+
+        private void read(string path)
+        {
+            using (FileStream fs = new FileStream(path, FileMode.Open))
+            {
+                IFormatter formatter = new BinaryFormatter();
+                scene = (Scene)formatter.Deserialize(fs);
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FallTimer.Stop();
+            SaveFileDialog sfd = new SaveFileDialog();
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                save(sfd.FileName);
+            }
+            FallTimer.Start();
+        }
+
+        private void openToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FallTimer.Stop();
+            OpenFileDialog ofd = new OpenFileDialog();
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                read(ofd.FileName);
+            }
+            FallTimer.Start();
         }
     }
 }
