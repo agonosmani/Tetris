@@ -78,6 +78,13 @@ namespace Tetris
             scene.drawNextShape(e.Graphics, pictureBox1.Width, pictureBox1.Height);
         }
 
+        public void NewGame()
+        {
+            FallTimer.Enabled = true;
+            scene = new Scene(GameFieldPictureBox.Width, GameFieldPictureBox.Height);
+            FallTimer.Start();
+        }
+
         private void save(string path)
         {
             using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
@@ -116,6 +123,11 @@ namespace Tetris
                 read(ofd.FileName);
             }
             FallTimer.Start();
+        }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            NewGame();
         }
     }
 }
