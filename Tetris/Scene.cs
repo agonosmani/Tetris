@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WMPLib;
 
 namespace Tetris
 {
@@ -18,10 +19,18 @@ namespace Tetris
         public int Width { get; set; }
         public int Height { get; set; }
         public Random rand { get; set; }
+        public bool Lost { get; set; }
+
+        public WindowsMediaPlayer sfxPlayer { get; set; }
 
         public Scene(int width, int height)
         {
+            Lost = false;
             rand = new Random();
+            sfxPlayer = new WindowsMediaPlayer();
+            
+            //sfxPlayer.controls.pause();
+            //sfxPlayer.URL = "clear.wav";
             generateFallingShape();
             FallingShape = new O_block("down");
 
@@ -96,8 +105,9 @@ namespace Tetris
                 }
             }
 
-
-            foreach(int ind in rowInd)
+            if (rowInd.Count > 0)
+                sfxPlayer.URL = "clear.wav";
+            foreach (int ind in rowInd)
             {
                 for(int i=ind; i>0; i--)
                 {
@@ -136,49 +146,70 @@ namespace Tetris
             brush.Dispose();
         }
 
+        public bool checkGameLost()
+        {
+            foreach (Tile t in FallingShape.draw(cellWidth, cellHeight))
+            {
+                if (t.y < 0)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public bool fall()
         {
             bool collision = false;
 
             List<Tile> tiles = FallingShape.draw(cellWidth, cellHeight);
 
-            foreach(Tile t in tiles)
+            foreach (Tile t in tiles)
             {
-                if((t.y + 1) * cellHeight >= Height){
+                if ((t.y + 1) * cellHeight >= Height)
+                {
                     collision = true;
+                    sfxPlayer.URL = "fall.wav";
                     setTiles(tiles);
                     deleteRows();
                     break;
                 }
-
-                foreach(Tile m in tileMatrix)
+                else
                 {
-                    if (m.set)
+                    foreach (Tile m in tileMatrix)
                     {
-                        if (t.y + 1 == m.y && t.x == m.x)
+                        if (m.set)
                         {
-                            collision = true;
-                            setTiles(tiles);
-                            deleteRows();
-                            break;
+                            if (t.y + 1 == m.y && t.x == m.x)
+                            {
+                                collision = true;
+                                sfxPlayer.URL = "fall.wav";
+                                if (checkGameLost())
+                                {
+                                    sfxPlayer.URL = "gameover.wav";
+                                    Lost = true;
+                                    return false;
+                                }
+                                setTiles(tiles);
+                                deleteRows();
+                                break;
+                            }
                         }
-                    }
-                    
-                }
 
+                    }
+                }
                 if (collision)
                     break;
             }
-
-            if(collision)
+            if (collision)
             {
                 FallingShape = NextShape;
                 generateFallingShape();
                 return false;
-                //setTiles(tiles);
             }
             else
-            { 
+            {
                 FallingShape.Location = new Point(FallingShape.Location.X, FallingShape.Location.Y + 1);
                 return true;
             }
@@ -194,7 +225,7 @@ namespace Tetris
         }
         public void bottom()
         {
-            while (fall()) ;
+            while (fall());
         }
         
         public void rotateShape()

@@ -10,15 +10,20 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Media;
+using WMPLib;
 
 namespace Tetris
 {
     public partial class TetrisForm : Form
     {
         public Scene scene;
+        public WindowsMediaPlayer bgMusicPlayer { get; set; }
         public TetrisForm()
         {
-            
+            bgMusicPlayer = new WindowsMediaPlayer();
+            bgMusicPlayer.URL = "Tetris Theme.mp3";
+            bgMusicPlayer.settings.setMode("loop", true);
             InitializeComponent();
         }
 
@@ -45,6 +50,21 @@ namespace Tetris
         {
             FallTimer.Interval = 450;
             scene.fall();
+            if (scene.Lost)
+            {
+                bgMusicPlayer.controls.pause();
+                FallTimer.Enabled = false;
+                FallTimer.Stop();
+                if (MessageBox.Show("Play Again?", "Game Over, You Lost.", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    NewGame();
+                }
+                else
+                {
+                    Application.Exit();
+                }
+
+            }
             Invalidate(true);
         }
 
@@ -81,6 +101,7 @@ namespace Tetris
         public void NewGame()
         {
             FallTimer.Enabled = true;
+            bgMusicPlayer.controls.play();
             scene = new Scene(GameFieldPictureBox.Width, GameFieldPictureBox.Height);
             FallTimer.Start();
         }

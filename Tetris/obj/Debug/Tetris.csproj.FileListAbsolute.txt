@@ -28,3 +28,5 @@ C:\Users\agon_\OneDrive\Desktop\New folder\Tetris\Tetris\obj\Debug\Tetris.csproj
 C:\Users\agon_\OneDrive\Desktop\New folder\Tetris\Tetris\obj\Debug\Tetris.csproj.CoreCompileInputs.cache
 C:\Users\agon_\OneDrive\Desktop\New folder\Tetris\Tetris\obj\Debug\Tetris.exe
 C:\Users\agon_\OneDrive\Desktop\New folder\Tetris\Tetris\obj\Debug\Tetris.pdb
+C:\Users\kadri\Desktop\Tetris2\Tetris\Tetris\obj\Debug\Interop.WMPLib.dll
+C:\Users\kadri\Desktop\Tetris2\Tetris\Tetris\obj\Debug\Tetris.csproj.ResolveComReference.cache
