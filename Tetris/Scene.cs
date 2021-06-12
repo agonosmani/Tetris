@@ -16,11 +16,14 @@ namespace Tetris
         public int cellHeight { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public Random rand { get; set; }
 
         public Scene(int width, int height)
         {
-            //FallingShape = fallingShape;
-            //NextShape = nextShape;
+            rand = new Random();
+            generateFallingShape();
+            FallingShape = new O_block("down");
+
 
             Width = width - 5;
             Height = height - 5;
@@ -39,7 +42,35 @@ namespace Tetris
 
         public void generateFallingShape()
         {
-            FallingShape = new T_block(new Point(3, 0), Color.Red, "down");
+            string[] randOrient = new string[4] { "up", "down", "left", "right" };
+
+            int x = rand.Next(0, 7);
+            string or = randOrient[rand.Next(0, 4)];
+
+            switch (x)
+            {
+                case 0:
+                    NextShape = new I_block(or);
+                    break;
+                case 1:
+                    NextShape = new J_block(or);
+                    break;
+                case 2:
+                    NextShape = new L_block(or);
+                    break;
+                case 3:
+                    NextShape = new Z_block(or);
+                    break;
+                case 4:
+                    NextShape = new S_block(or);
+                    break;
+                case 5:
+                    NextShape = new T_block(or);
+                    break;
+                case 6:
+                    NextShape = new O_block(or);
+                    break;
+            }
         }
 
         public void deleteRows()
@@ -78,7 +109,33 @@ namespace Tetris
             }
 
         }
-        public void fall()
+
+        public void drawNextShape(Graphics g, int p2Width, int p2Height)
+        {
+            int p2CellWidth = (int)p2Width / 6;
+            int p2CellHeight = (int)p2Height / 6;
+
+            Pen gridLines = new Pen(Color.Black, 1.5F);
+            Brush brush = new SolidBrush(NextShape.Color);
+
+            foreach (Tile t in NextShape.draw(p2CellWidth, p2CellHeight))
+            {
+                g.FillRectangle(brush, (t.x-4) * p2CellWidth, (t.y+3) * p2CellHeight, p2CellWidth, p2CellHeight);
+            }
+
+            for (int i = p2CellHeight; i <= p2Height; i += p2CellHeight)
+            {
+                for (int j = p2CellWidth; j <= p2Width; j += p2CellWidth)
+                {
+                    g.DrawRectangle(gridLines, j - p2CellHeight, i - p2CellWidth, p2CellWidth, p2CellHeight);
+                }
+            }
+
+            gridLines.Dispose();
+            brush.Dispose();
+        }
+
+        public bool fall()
         {
             bool collision = false;
 
@@ -114,12 +171,15 @@ namespace Tetris
 
             if(collision)
             {
+                FallingShape = NextShape;
                 generateFallingShape();
+                return false;
                 //setTiles(tiles);
             }
             else
             { 
                 FallingShape.Location = new Point(FallingShape.Location.X, FallingShape.Location.Y + 1);
+                return true;
             }
         }
 
@@ -131,7 +191,11 @@ namespace Tetris
                 tileMatrix[t.y, t.x].set = true;
             }
         }
-
+        public void bottom()
+        {
+            while (fall()) ;
+        }
+        
         public void rotateShape()
         {
             bool canRotate = true;
@@ -224,6 +288,7 @@ namespace Tetris
                 t.draw(g);
             }
 
+            //mountain pile
             foreach (Tile t in tileMatrix)
             {
                 if (t.set)

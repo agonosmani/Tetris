@@ -13,11 +13,11 @@ namespace Tetris
         public Tile[] tiles { get; set; }
         public Color Color { get; set; }
         public string Orientation { get; set; }
-        public Shape(Point Location, Color Color, string Orientation)
+        public Shape(Color Color, string Orientation)
         {
             tiles = new Tile[4];
             this.Color = Color;
-            this.Location = Location;
+            this.Location = new Point(7, 0);
             this.Orientation = Orientation;
         }
 

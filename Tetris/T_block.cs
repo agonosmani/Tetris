@@ -9,7 +9,7 @@ namespace Tetris
 {
     public class T_block : Shape
     {
-        public T_block(Point Location, Color Color, string Orientation) : base(Location, Color, Orientation)
+        public T_block(string Orientation) : base(Color.Purple, Orientation)
         {
         }
 

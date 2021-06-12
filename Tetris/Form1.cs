@@ -22,10 +22,9 @@ namespace Tetris
         private void Form1_Load(object sender, EventArgs e)
         {
             scene = new Scene(GameFieldPictureBox.Width, GameFieldPictureBox.Height);
-            scene.generateFallingShape();
             FallTimer.Start();
             DoubleBuffered = true; 
-            Invalidate();
+            Invalidate(true);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -41,6 +40,7 @@ namespace Tetris
 
         private void FallTimer_Tick(object sender, EventArgs e)
         {
+            FallTimer.Interval = 450;
             scene.fall();
             Invalidate(true);
         }
@@ -59,7 +59,20 @@ namespace Tetris
             {
                 scene.moveRight();
             }
+            else if (e.KeyValue == 'S')
+            {
+                FallTimer.Interval = 50;
+            }
+            else if (e.KeyValue == 'W')
+            {
+                scene.bottom();
+            }
             Invalidate(true);
+        }
+
+        private void pictureBox1_Paint_1(object sender, PaintEventArgs e)
+        {
+            scene.drawNextShape(e.Graphics, pictureBox1.Width, pictureBox1.Height);
         }
     }
 }

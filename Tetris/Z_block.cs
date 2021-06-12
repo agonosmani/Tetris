@@ -9,7 +9,7 @@ namespace Tetris
 {
     public class Z_block : Shape
     {
-        public Z_block(Point Location, Color Color, string Orientation) : base(Location, Color, Orientation)
+        public Z_block(string Orientation) : base(Color.Red, Orientation)
         {
         }
 
@@ -17,35 +17,19 @@ namespace Tetris
         {
             List<Tile> points = new List<Tile>();
 
-            if (Orientation == "up")
+            if (Orientation == "up" || Orientation == "down")
             {
-                points.Add(new Tile(Location.X - 1, Location.Y, cellWidth, cellHeight, Color));
+                points.Add(new Tile(Location.X, Location.Y + 1, cellWidth, cellHeight, Color));
                 points.Add(new Tile(Location.X, Location.Y, cellWidth, cellHeight, Color));
                 points.Add(new Tile(Location.X + 1, Location.Y, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X, Location.Y - 1, cellWidth, cellHeight, Color));
+                points.Add(new Tile(Location.X + 1, Location.Y - 1, cellWidth, cellHeight, Color));
             }
-            else if (Orientation == "right")
+            else if (Orientation == "right" || Orientation == "left")
             {
-                points.Add(new Tile(Location.X, Location.Y - 1, cellWidth, cellHeight, Color));
+                points.Add(new Tile(Location.X - 1, Location.Y - 1, cellWidth, cellHeight, Color));
                 points.Add(new Tile(Location.X, Location.Y, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X, Location.Y + 1, cellWidth, cellHeight, Color));
+                points.Add(new Tile(Location.X, Location.Y - 1, cellWidth, cellHeight, Color));
                 points.Add(new Tile(Location.X + 1, Location.Y, cellWidth, cellHeight, Color));
-
-            }
-            else if (Orientation == "down")
-            {
-                points.Add(new Tile(Location.X - 1, Location.Y, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X, Location.Y, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X + 1, Location.Y, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X, Location.Y + 1, cellWidth, cellHeight, Color));
-
-            }
-            else if (Orientation == "left")
-            {
-                points.Add(new Tile(Location.X, Location.Y - 1, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X, Location.Y, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X, Location.Y + 1, cellWidth, cellHeight, Color));
-                points.Add(new Tile(Location.X - 1, Location.Y, cellWidth, cellHeight, Color));
 
             }
 
