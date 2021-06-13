@@ -23,7 +23,6 @@ namespace Tetris
 
         public int CurrentScore { get; set; }
         public bool wasTetris { get; set; }
-        //public int HighScore { get; set; }
 
         public WindowsMediaPlayer sfxPlayer { get; set; }
 

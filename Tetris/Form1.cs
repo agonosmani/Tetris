@@ -21,12 +21,15 @@ namespace Tetris
         public WindowsMediaPlayer bgMusicPlayer { get; set; }
         public HighScore highScore { get; set; }
 
+        public bool isPaused { get; set; }
+
         public TetrisForm()
         {
             bgMusicPlayer = new WindowsMediaPlayer();
             bgMusicPlayer.URL = "Tetris Theme.mp3";
             bgMusicPlayer.settings.setMode("loop", true);
             highScore = getHighScore();
+            isPaused = false;
             InitializeComponent();
             DoubleBuffered = true;
         }
@@ -107,25 +110,27 @@ namespace Tetris
         }
         private void TetrisForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyValue == ' ')
-            {
-                scene.rotateShape();
-            }
-            else if (e.KeyValue == 'A')
-            {
-                scene.moveLeft();
-            }
-            else if (e.KeyValue == 'D')
-            {
-                scene.moveRight();
-            }
-            else if (e.KeyValue == 'S')
-            {
-                FallTimer.Interval = 50;
-            }
-            else if (e.KeyValue == 'W')
-            {
-                scene.bottom();
+            if (!isPaused) { 
+                if (e.KeyValue == ' ')
+                {
+                    scene.rotateShape();
+                }
+                else if (e.KeyValue == 'A' || e.KeyValue == (char)Keys.Left)
+                {
+                    scene.moveLeft();
+                }
+                else if (e.KeyValue == 'D' || e.KeyValue == (char)Keys.Right)
+                {
+                    scene.moveRight();
+                }
+                else if (e.KeyValue == 'S' || e.KeyValue == (char)Keys.Down)
+                {
+                    FallTimer.Interval = 50;
+                }
+                else if (e.KeyValue == 'W' || e.KeyValue == (char)Keys.Up)
+                {
+                    scene.bottom();
+                }
             }
             Invalidate(true);
         }
@@ -216,6 +221,22 @@ namespace Tetris
             else
             {
                 scene.sfxPlayer.settings.mute = false;
+            }
+        }
+
+        private void pauseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (pauseToolStripMenuItem.Text == "Pause")
+            {
+                FallTimer.Stop();
+                isPaused = true;
+                pauseToolStripMenuItem.Text = "Resume";
+            }
+            else
+            {
+                FallTimer.Start();
+                isPaused = false;
+                pauseToolStripMenuItem.Text = "Pause";
             }
         }
     }
