@@ -58,8 +58,8 @@ namespace Tetris
             FallTimer.Interval = 450;
             scene.fall();
             updateScoreTexts();
-            if (scene.CurrentScore > highScore.highScore)
-                changeHighScore();
+            if (scene.CurrentScore > highScore.highScore) 
+                changeHighScore(); //Serialize new highscore
             if (scene.Lost)
             {
                 bgMusicPlayer.controls.pause();

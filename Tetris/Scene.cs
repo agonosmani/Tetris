@@ -90,6 +90,7 @@ namespace Tetris
         {
             List<int> rowInd = new List<int>();
 
+            //Iterate through all tileMatrix and find indices of full rows. (rows that are filled with set tiles)
             for (int i = 1; i < ((int)Height / cellHeight); i++)
             {
                 bool fullRow = true;
@@ -108,9 +109,9 @@ namespace Tetris
                 }
             }
 
-            if (rowInd.Count > 0)
+            if (rowInd.Count > 0) //If there are full rows play the clear sfx
                 sfxPlayer.URL = "clear.wav";
-            if (rowInd.Count == 4 && wasTetris)
+            if (rowInd.Count == 4 && wasTetris) //If there are 4 full rows and the last deletion was also 4 rows (Tetris)
             {
                 CurrentScore += 1200;
             } else if (rowInd.Count == 4)
@@ -122,6 +123,8 @@ namespace Tetris
                 CurrentScore += (rowInd.Count * 100);
                 wasTetris = false;
             }
+
+            //Displace the upper rows to where the full rows are
             foreach (int ind in rowInd)
             {
                 for(int i=ind; i>0; i--)
@@ -133,7 +136,6 @@ namespace Tetris
                     }
                 }
             }
-
         }
 
         public void drawNextShape(Graphics g, int p2Width, int p2Height)
@@ -182,27 +184,27 @@ namespace Tetris
 
             foreach (Tile t in tiles)
             {
-                if ((t.y + 1) * cellHeight >= Height)
+                if ((t.y + 1) * cellHeight >= Height)//If any tile of the falling shape crosses the lower border of the game picture box
                 {
                     collision = true;
                     sfxPlayer.URL = "fall.wav";
-                    setTiles(tiles);
-                    deleteRows();
+                    setTiles(tiles);//Update matrix with tiles of the falling shape
+                    deleteRows();//Delete rows and update score
                     break;
                 }
                 else
                 {
                     foreach (Tile m in tileMatrix)
                     {
-                        if (m.set)
+                        if (m.set)//If the tile is set(there is a tile on that place)
                         {
-                            if (t.y + 1 == m.y && t.x == m.x)
+                            if (t.y + 1 == m.y && t.x == m.x)//If any tile of the falling shape is one tile above the other set tile
                             {
                                 collision = true;
-                                sfxPlayer.URL = "fall.wav";
+                                sfxPlayer.URL = "fall.wav";//Play fall sfx
                                 if (checkGameLost())
                                 {
-                                    sfxPlayer.URL = "gameover.wav";
+                                    sfxPlayer.URL = "gameover.wav";//Play game over sfx
                                     Lost = true;
                                     return false;
                                 }
@@ -225,6 +227,7 @@ namespace Tetris
             }
             else
             {
+                //If the falling shape doesn't collide with the lower border or other set tiles, move it down 1 tile.
                 FallingShape.Location = new Point(FallingShape.Location.X, FallingShape.Location.Y + 1);
                 return true;
             }
@@ -255,21 +258,6 @@ namespace Tetris
                     break;
                 }
 
-                /*bool f = false;
-                foreach(Tile m in tileMatrix)
-                {
-                    if (m.set)
-                    {
-                        if (t.y + 1 == m.y && t.x == m.x)
-                        {
-                            canRotate = false;
-                            f = true;
-                            break;
-                        }
-                    }
-                    
-                }
-                if (f) break;*/
             }
 
             if (canRotate)
