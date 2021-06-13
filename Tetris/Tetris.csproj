@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HighScore.cs" />
     <Compile Include="I_block.cs" />
     <Compile Include="J_block.cs" />
     <Compile Include="L_block.cs" />

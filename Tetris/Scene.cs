@@ -21,6 +21,10 @@ namespace Tetris
         public Random rand { get; set; }
         public bool Lost { get; set; }
 
+        public int CurrentScore { get; set; }
+        public bool wasTetris { get; set; }
+        //public int HighScore { get; set; }
+
         public WindowsMediaPlayer sfxPlayer { get; set; }
 
         public Scene(int width, int height)
@@ -28,9 +32,9 @@ namespace Tetris
             Lost = false;
             rand = new Random();
             sfxPlayer = new WindowsMediaPlayer();
-            
-            //sfxPlayer.controls.pause();
-            //sfxPlayer.URL = "clear.wav";
+            CurrentScore = 0;
+            wasTetris = false;
+
             generateFallingShape();
             FallingShape = new O_block("down");
 
@@ -107,6 +111,18 @@ namespace Tetris
 
             if (rowInd.Count > 0)
                 sfxPlayer.URL = "clear.wav";
+            if (rowInd.Count == 4 && wasTetris)
+            {
+                CurrentScore += 1200;
+            } else if (rowInd.Count == 4)
+            {
+                CurrentScore += 800;
+                wasTetris = true;
+            } else if (rowInd.Count!=0)
+            {
+                CurrentScore += (rowInd.Count * 100);
+                wasTetris = false;
+            }
             foreach (int ind in rowInd)
             {
                 for(int i=ind; i>0; i--)
@@ -240,7 +256,7 @@ namespace Tetris
                     break;
                 }
 
-                bool f = false;
+                /*bool f = false;
                 foreach(Tile m in tileMatrix)
                 {
                     if (m.set)
@@ -254,7 +270,7 @@ namespace Tetris
                     }
                     
                 }
-                if (f) break;
+                if (f) break;*/
             }
 
             if (canRotate)
@@ -277,8 +293,34 @@ namespace Tetris
                     }
                 }
             }
+            foreach (Tile t in FallingShape.draw(cellWidth, cellHeight))
+            {
+                bool f = false;
+                foreach (Tile m in tileMatrix)
+                {
+                    if (m.set)
+                    {
+                        if (t.y == m.y && t.x == m.x)
+                        { 
+                            f = true;
+                            rotateBack();
+                            break;
+                        }
+                    }
 
+                }
+                if (f) break;
+            }
         }
+
+        public void rotateBack()
+        {
+            if (FallingShape.Orientation == "up") FallingShape.Orientation = "left";
+            else if (FallingShape.Orientation == "left") FallingShape.Orientation = "down";
+            else if (FallingShape.Orientation == "down") FallingShape.Orientation = "right";
+            else if (FallingShape.Orientation == "right") FallingShape.Orientation = "up";
+        }
+
         public void moveLeft()
         {
             bool collision = false;
@@ -289,6 +331,19 @@ namespace Tetris
                     collision = true;
                     break;
                 }
+                foreach (Tile m in tileMatrix)
+                {
+                    if (m.set)
+                    {
+                        if (t.y == m.y && t.x-1 == m.x)
+                        {
+                            collision = true;
+                            break;
+                        }
+                    }
+                }
+                if (collision)
+                    break;
             }
 
             if (!collision)
@@ -304,6 +359,19 @@ namespace Tetris
                     collision = true;
                     break;
                 }
+                foreach (Tile m in tileMatrix)
+                {
+                    if (m.set)
+                    {
+                        if (t.y == m.y && t.x + 1 == m.x)
+                        {
+                            collision = true;
+                            break;
+                        }
+                    }
+                }
+                if (collision)
+                    break;
             }
 
             if (!collision)

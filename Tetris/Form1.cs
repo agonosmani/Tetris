@@ -19,19 +19,23 @@ namespace Tetris
     {
         public Scene scene;
         public WindowsMediaPlayer bgMusicPlayer { get; set; }
+        public HighScore highScore { get; set; }
+
         public TetrisForm()
         {
             bgMusicPlayer = new WindowsMediaPlayer();
             bgMusicPlayer.URL = "Tetris Theme.mp3";
             bgMusicPlayer.settings.setMode("loop", true);
+            highScore = getHighScore();
             InitializeComponent();
+            DoubleBuffered = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
             scene = new Scene(GameFieldPictureBox.Width, GameFieldPictureBox.Height);
             FallTimer.Start();
-            DoubleBuffered = true; 
+            //DoubleBuffered = true; 
             Invalidate(true);
         }
 
@@ -50,6 +54,9 @@ namespace Tetris
         {
             FallTimer.Interval = 450;
             scene.fall();
+            updateScoreTexts();
+            if (scene.CurrentScore > highScore.highScore)
+                changeHighScore();
             if (scene.Lost)
             {
                 bgMusicPlayer.controls.pause();
@@ -68,9 +75,39 @@ namespace Tetris
             Invalidate(true);
         }
 
+        public void updateScoreTexts()
+        {
+            tbHighScore.Text = highScore.highScore.ToString();
+            tbCurrentScore.Text = scene.CurrentScore.ToString();
+        }
+
+        public void changeHighScore()
+        {
+            highScore.highScore = scene.CurrentScore;
+            using (FileStream fs = new FileStream("highscore", FileMode.OpenOrCreate))
+            {
+                IFormatter formatter = new BinaryFormatter();
+                formatter.Serialize(fs,highScore);
+            }
+        }
+        public HighScore getHighScore()
+        {
+            try
+            {
+                using (FileStream fs = new FileStream("highscore", FileMode.Open))
+                {
+                    IFormatter formatter = new BinaryFormatter();
+                    return (HighScore)formatter.Deserialize(fs);
+                }
+            }
+            catch
+            {
+               return new HighScore();
+            }
+        }
         private void TetrisForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyValue == 'T')
+            if (e.KeyValue == ' ')
             {
                 scene.rotateShape();
             }
@@ -149,6 +186,37 @@ namespace Tetris
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             NewGame();
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void musicToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            musicToolStripMenuItem.Checked = !musicToolStripMenuItem.Checked;
+            if (musicToolStripMenuItem.Checked)
+            {
+                bgMusicPlayer.settings.mute = true;
+            } 
+            else
+            {
+                bgMusicPlayer.settings.mute = false;
+            }
+        }
+
+        private void soundFXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            soundFXToolStripMenuItem.Checked = !soundFXToolStripMenuItem.Checked;
+            if (soundFXToolStripMenuItem.Checked)
+            {
+                scene.sfxPlayer.settings.mute = true;
+            }
+            else
+            {
+                scene.sfxPlayer.settings.mute = false;
+            }
         }
     }
 }
